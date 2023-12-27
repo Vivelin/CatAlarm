@@ -11,6 +11,17 @@
                 x:Name="TimeLabel"
                 Text="TIME GOES HERE"
                 Style="{StaticResource Headline}" />
+
+            <Label x:Name="AlarmPickerLabel" Text="Wake me up some time between:" />
+            <TimePicker x:Name="AlarmStartTimePicker" />
+            <TimePicker x:Name="AlarmEndTimePicker" />
+
+            <Label x:Name="AlarmLabel" IsVisible="false" />
+
+            <Button
+                x:Name="SetAlarmButton"
+                Text="Set alarm"
+                Clicked="SetAlarmButton_Clicked" />
         </VerticalStackLayout>
     </ScrollView>
 
