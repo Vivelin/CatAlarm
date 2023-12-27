@@ -8,7 +8,7 @@
     Title="MauiCatAlarm">
 
     <ShellContent
-        Title="Home"
+        Title="CAT ALARM"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

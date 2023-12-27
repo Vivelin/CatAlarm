@@ -2,23 +2,18 @@
 
 public partial class MainPage : ContentPage
 {
-    int count = 0;
-
     public MainPage()
     {
         InitializeComponent();
+
+        UpdateTime();
+        Dispatcher.StartTimer(TimeSpan.FromSeconds(1), UpdateTime);
     }
 
-    private void OnCounterClicked(object sender, EventArgs e)
+    private bool UpdateTime()
     {
-        count++;
-
-        if (count == 1)
-            CounterBtn.Text = $"Clicked {count} time";
-        else
-            CounterBtn.Text = $"Clicked {count} times";
-
-        SemanticScreenReader.Announce(CounterBtn.Text);
+        TimeLabel.Text = DateTime.Now.ToString("T");
+        return true;
     }
 }
 
