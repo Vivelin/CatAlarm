@@ -20,6 +20,7 @@ public partial class AlarmService
 {
     private AlarmManager AlarmManager;
     private PendingIntent? _pendingIntent;
+    private TimeSpan? _scheduledTime;
 
     public AlarmService()
     {
@@ -34,8 +35,7 @@ public partial class AlarmService
 
     public partial TimeSpan? GetScheduledTime()
     {
-        var triggerTime = AlarmManager.NextAlarmClock?.TriggerTime;
-        return triggerTime.HasValue ? TimeSpan.FromMilliseconds(triggerTime.Value) : null;
+        return _scheduledTime;
     }
 
     public partial void DeleteAlarm()
@@ -48,6 +48,7 @@ public partial class AlarmService
         AlarmManager.Cancel(_pendingIntent);
         Log.Info("AlarmService", "Alarm cancelled");
         _pendingIntent = null;
+        _scheduledTime = null;
     }
 
     public partial void SetAlarm(TimeSpan startTime)
@@ -57,7 +58,10 @@ public partial class AlarmService
             throw new InvalidOperationException("Unable to schedule exact alarms");
         }
 
+        var startTimeInMillis = ConvertToMillis(startTime);
         var intent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
+        intent.PutExtra("triggerTime", startTimeInMillis);
+
         var flags = OperatingSystem.IsAndroidVersionAtLeast(23) ? PendingIntentFlags.Immutable : 0;
         _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, flags);
         if (_pendingIntent == null)
@@ -65,25 +69,37 @@ public partial class AlarmService
             throw new Exception("Failed to get PendingIntent");
         }
 
-        //var startMillis = Java.Lang.JavaSystem.CurrentTimeMillis() + (long)startTime.TotalMilliseconds;
-        //var lengthMillis = (long)(endTime - startTime).TotalMilliseconds;
-        //alarmManager.SetWindow(AlarmType.RtcWakeup, startMillis, lengthMillis, alarmIntent!);
-
-        var calendar = Calendar.Instance;
-        calendar.TimeInMillis = Java.Lang.JavaSystem.CurrentTimeMillis();
-        calendar.Set(CalendarField.HourOfDay, startTime.Hours);
-        calendar.Set(CalendarField.Minute, startTime.Minutes);
-        calendar.Set(CalendarField.Second, startTime.Seconds);
-
         if (OperatingSystem.IsAndroidVersionAtLeast(23))
         {
-            AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
             Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
         }
         else
         {
-            AlarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            AlarmManager.SetExact(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
             Log.Info("AlarmService", $"Alarm set for {startTime:t}");
         }
+
+        _scheduledTime = startTime;
+    }
+
+    private static long ConvertToMillis(TimeSpan time)
+    {
+        var calendar = Calendar.Instance;
+        calendar.TimeInMillis = Java.Lang.JavaSystem.CurrentTimeMillis();
+        calendar.Set(CalendarField.HourOfDay, time.Hours);
+        calendar.Set(CalendarField.Minute, time.Minutes);
+        calendar.Set(CalendarField.Second, time.Seconds);
+        return calendar.TimeInMillis;
+    }
+
+    private static TimeSpan ConvertFromMillis(long millis)
+    {
+        var calendar = Calendar.Instance;
+        calendar.TimeInMillis = millis;
+        return new TimeSpan(
+            calendar.Get(CalendarField.HourOfDay), 
+            calendar.Get(CalendarField.Minute), 
+            calendar.Get(CalendarField.Second));
     }
 }

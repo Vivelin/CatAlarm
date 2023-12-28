@@ -9,7 +9,7 @@
                              Spacing="25"
                              BindingContext="{x:Reference Self}">
             <Label x:Name="TimeLabel"
-                   Text="TIME GOES HERE"
+                   Text="{Binding FormattedCurrentTime}"
                    Style="{StaticResource Headline}" />
 
             <Label x:Name="AlarmPickerLabel"

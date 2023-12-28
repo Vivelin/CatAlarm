@@ -10,26 +10,25 @@ public partial class MainPage : ContentPage
 
     public MainPage(AlarmService alarmService)
     {
+        _alarmService = alarmService;
+
         InitializeComponent();
 
         var scheduledTime = alarmService.GetScheduledTime();
         AlarmStartTimePicker.Time = scheduledTime ?? new TimeSpan(9, 0, 0);
-        // AlarmEndTimePicker.Time = scheduledTime?.Add(TimeSpan.FromMinutes(10)) ?? new TimeSpan(9, 30, 0);
 
-        UpdateTime();
-        Dispatcher.StartTimer(TimeSpan.FromSeconds(1), UpdateTime);
-        _alarmService = alarmService;
+        Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
+        {
+            OnPropertyChanged(nameof(FormattedCurrentTime));
+            return true;
+        });
     }
 
     public bool IsAlarmSet => _alarmService.IsSet();
 
     public bool IsAlarmUnset => !IsAlarmSet;
 
-    private bool UpdateTime()
-    {
-        TimeLabel.Text = DateTime.Now.ToString("T");
-        return true;
-    }
+    public string FormattedCurrentTime => DateTime.Now.ToString("T");
 
     private void SetAlarmButton_Clicked(object sender, EventArgs e)
     {
@@ -53,8 +52,13 @@ public partial class MainPage : ContentPage
 
     private string FormatAlarmText()
     {
-        var startTime = DateTime.Today.Add(AlarmStartTimePicker.Time);
-        // var endTime = DateTime.Today.Add(AlarmEndTimePicker.Time);
+        var scheduledTime = _alarmService.GetScheduledTime();
+        if (scheduledTime == null)
+        {
+            return $"Zzzzzzzz…";
+        }
+
+        var startTime = DateTime.Today.Add(scheduledTime.Value);
         return $"You'll be woken up at {startTime:t}.";
     }
 }
