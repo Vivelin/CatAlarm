@@ -13,4 +13,6 @@ public partial class AlarmService
     public partial bool IsSet();
 
     public partial void DeleteAlarm();
+
+    public partial TimeSpan? GetScheduledTime();
 }

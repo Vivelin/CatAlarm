@@ -1,28 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiCatAlarm.MainPage">
+             x:Class="MauiCatAlarm.MainPage"
+             x:Name="Self">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Label
-                x:Name="TimeLabel"
-                Text="TIME GOES HERE"
-                Style="{StaticResource Headline}" />
+        <VerticalStackLayout Padding="30,0"
+                             Spacing="25"
+                             BindingContext="{x:Reference Self}">
+            <Label x:Name="TimeLabel"
+                   Text="TIME GOES HERE"
+                   Style="{StaticResource Headline}" />
 
-            <Label x:Name="AlarmPickerLabel" Text="Wake me up some time between:" />
-            <TimePicker x:Name="AlarmStartTimePicker" />
-            <TimePicker x:Name="AlarmEndTimePicker" />
+            <Label x:Name="AlarmPickerLabel"
+                   Text="Wake me up some time between:"
+                   IsVisible="{Binding IsAlarmUnset}"/>
+            <TimePicker x:Name="AlarmStartTimePicker"
+                        Format="t"
+                        IsVisible="{Binding IsAlarmUnset}" />
+            <TimePicker x:Name="AlarmEndTimePicker"
+                        Format="t"
+                        IsVisible="{Binding IsAlarmUnset}" />
 
-            <Label x:Name="AlarmLabel" IsVisible="false" />
+            <Label x:Name="AlarmLabel"
+                   IsVisible="{Binding IsAlarmSet}" />
 
-            <Button
-                x:Name="SetAlarmButton"
-                Text="Set alarm"
-                Clicked="SetAlarmButton_Clicked" />
+            <Button x:Name="SetAlarmButton"
+                    Text="Set alarm"
+                    Clicked="SetAlarmButton_Clicked" />
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

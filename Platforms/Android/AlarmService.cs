@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
+using Android.Util;
 
 using Java.Util;
 
@@ -17,11 +18,24 @@ namespace MauiCatAlarm.Services;
 
 public partial class AlarmService
 {
+    private AlarmManager AlarmManager;
     private PendingIntent? _pendingIntent;
+
+    public AlarmService()
+    {
+        AlarmManager = Android.App.Application.Context.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>()
+            ?? throw new Exception("Failed to get AlarmManager");
+    }
 
     public partial bool IsSet()
     {
         return _pendingIntent != null;
+    }
+
+    public partial TimeSpan? GetScheduledTime()
+    {
+        var triggerTime = AlarmManager.NextAlarmClock?.TriggerTime;
+        return triggerTime.HasValue ? TimeSpan.FromMilliseconds(triggerTime.Value) : null;
     }
 
     public partial void DeleteAlarm()
@@ -31,30 +45,21 @@ public partial class AlarmService
             throw new InvalidOperationException("Alarm not set");
         }
 
-        var alarmManager = Android.App.Application.Context.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>()
-            ?? throw new Exception("Failed to get AlarmManager");
-
-        alarmManager.Cancel(_pendingIntent);
+        AlarmManager.Cancel(_pendingIntent);
+        Log.Info("AlarmService", "Alarm cancelled");
         _pendingIntent = null;
     }
 
     public partial void SetAlarm(TimeSpan startTime, TimeSpan endTime, Func<bool> callback)
     {
-        if (_pendingIntent != null)
-        {
-            throw new InvalidOperationException("Alarm already set");
-        }
-
-        var alarmManager = Android.App.Application.Context.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>()
-            ?? throw new Exception("Failed to get AlarmManager");
-
-        if (OperatingSystem.IsAndroidVersionAtLeast(31) && !alarmManager.CanScheduleExactAlarms())
+        if (OperatingSystem.IsAndroidVersionAtLeast(31) && !AlarmManager.CanScheduleExactAlarms())
         {
             throw new InvalidOperationException("Unable to schedule exact alarms");
         }
 
         var intent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
-        _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, 0);
+        var flags = OperatingSystem.IsAndroidVersionAtLeast(23) ? PendingIntentFlags.Immutable : 0;
+        _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, flags);
         if (_pendingIntent == null)
         {
             throw new Exception("Failed to get PendingIntent");
@@ -72,11 +77,13 @@ public partial class AlarmService
 
         if (OperatingSystem.IsAndroidVersionAtLeast(23))
         {
-            alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
         }
         else
         {
-            alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            AlarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, _pendingIntent);
+            Log.Info("AlarmService", $"Alarm set for {startTime:t}");
         }
     }
 }

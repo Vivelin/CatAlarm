@@ -8,6 +8,6 @@ public class AlarmReceiver : BroadcastReceiver
 {
     public override void OnReceive(Context? context, Intent? intent)
     {
-        Log.Info("AlarmReceiver", "Alarm received");
+        
     }
 }
