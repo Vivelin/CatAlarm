@@ -18,5 +18,5 @@ namespace MauiCatAlarm;
                            | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-
+    
 }

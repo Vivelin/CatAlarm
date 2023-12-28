@@ -1,4 +1,5 @@
-﻿using MauiCatAlarm.Services;
+﻿using MauiCatAlarm.Platforms.Android;
+using MauiCatAlarm.Services;
 
 using Microsoft.Extensions.Logging;
 
@@ -34,8 +35,19 @@ public partial class MainPage : ContentPage
 
     public string FormattedCurrentTime => DateTime.Now.ToString("T");
 
-    private void SetAlarmButton_Clicked(object sender, EventArgs e)
+    private async void SetAlarmButton_Clicked(object sender, EventArgs e)
     {
+        var status = await Permissions.CheckStatusAsync<PostNotificationsPermission>();
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<PostNotificationsPermission>();
+            if (status != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Permission required", "An alarm app without permissions to show you alarms is pretty sad.", "OK");
+                return;
+            }
+        }
+
         if (_alarmService.IsSet())
         {
             _alarmService.DeleteAlarm();

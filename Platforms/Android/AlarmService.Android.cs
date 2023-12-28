@@ -63,23 +63,14 @@ public partial class AlarmService
         intent.SetFlags(ActivityFlags.ReceiverForeground);
         intent.PutExtra("triggerTime", startTimeInMillis);
 
-        var flags = OperatingSystem.IsAndroidVersionAtLeast(23) ? PendingIntentFlags.Immutable : 0;
-        _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, flags);
+        _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, PendingIntentFlags.Immutable);
         if (_pendingIntent == null)
         {
             throw new Exception("Failed to get PendingIntent");
         }
 
-        if (OperatingSystem.IsAndroidVersionAtLeast(23))
-        {
-            AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
-            Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
-        }
-        else
-        {
-            AlarmManager.SetExact(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
-            Log.Info("AlarmService", $"Alarm set for {startTime:t}");
-        }
+        AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
+        Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
 
         _scheduledTime = startTime;
     }
