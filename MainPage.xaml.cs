@@ -14,7 +14,7 @@ public partial class MainPage : ContentPage
 
         var scheduledTime = alarmService.GetScheduledTime();
         AlarmStartTimePicker.Time = scheduledTime ?? new TimeSpan(9, 0, 0);
-        AlarmEndTimePicker.Time = scheduledTime?.Add(TimeSpan.FromMinutes(10)) ?? new TimeSpan(9, 30, 0);
+        // AlarmEndTimePicker.Time = scheduledTime?.Add(TimeSpan.FromMinutes(10)) ?? new TimeSpan(9, 30, 0);
 
         UpdateTime();
         Dispatcher.StartTimer(TimeSpan.FromSeconds(1), UpdateTime);
@@ -42,7 +42,7 @@ public partial class MainPage : ContentPage
         }
         else
         {
-            _alarmService.SetAlarm(AlarmStartTimePicker.Time, AlarmEndTimePicker.Time, () => false);
+            _alarmService.SetAlarm(AlarmStartTimePicker.Time);
 
             SetAlarmButton.Text = "Turn off";
             AlarmLabel.Text = FormatAlarmText();
@@ -54,7 +54,7 @@ public partial class MainPage : ContentPage
     private string FormatAlarmText()
     {
         var startTime = DateTime.Today.Add(AlarmStartTimePicker.Time);
-        var endTime = DateTime.Today.Add(AlarmEndTimePicker.Time);
-        return $"You'll be woken up between {startTime:t} and {endTime:t}.";
+        // var endTime = DateTime.Today.Add(AlarmEndTimePicker.Time);
+        return $"You'll be woken up at {startTime:t}.";
     }
 }

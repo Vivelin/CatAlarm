@@ -50,7 +50,7 @@ public partial class AlarmService
         _pendingIntent = null;
     }
 
-    public partial void SetAlarm(TimeSpan startTime, TimeSpan endTime, Func<bool> callback)
+    public partial void SetAlarm(TimeSpan startTime)
     {
         if (OperatingSystem.IsAndroidVersionAtLeast(31) && !AlarmManager.CanScheduleExactAlarms())
         {

@@ -8,7 +8,7 @@ namespace MauiCatAlarm.Services;
 
 public partial class AlarmService
 {
-    public partial void SetAlarm(TimeSpan startTime, TimeSpan endTime, Func<bool> callback);
+    public partial void SetAlarm(TimeSpan startTime);
 
     public partial bool IsSet();
 
