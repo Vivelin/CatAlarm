@@ -60,6 +60,7 @@ public partial class AlarmService
 
         var startTimeInMillis = ConvertToMillis(startTime);
         var intent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
+        intent.SetFlags(ActivityFlags.ReceiverForeground);
         intent.PutExtra("triggerTime", startTimeInMillis);
 
         var flags = OperatingSystem.IsAndroidVersionAtLeast(23) ? PendingIntentFlags.Immutable : 0;

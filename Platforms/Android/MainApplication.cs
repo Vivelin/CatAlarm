@@ -1,5 +1,7 @@
 ﻿using Android.App;
+using Android.Graphics;
 using Android.Runtime;
+using Android.Util;
 
 namespace MauiCatAlarm;
 [Application]

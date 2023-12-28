@@ -18,9 +18,6 @@
             <TimePicker x:Name="AlarmStartTimePicker"
                         Format="t"
                         IsVisible="{Binding IsAlarmUnset}" />
-            <!--<TimePicker x:Name="AlarmEndTimePicker"
-                        Format="t"
-                        IsVisible="{Binding IsAlarmUnset}" />-->
 
             <Label x:Name="AlarmLabel"
                    IsVisible="{Binding IsAlarmSet}" />
