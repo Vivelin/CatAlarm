@@ -12,9 +12,13 @@ public partial class AlarmService
 
     public partial bool IsSet();
 
+    public partial bool IsEnabled();
+
     public partial void DeleteAlarm();
 
     public partial void DismissAlarm();
+
+    public partial void EnsureAlarmIsSetIfEnabled();
 
     public partial TimeSpan? GetScheduledTime();
 }

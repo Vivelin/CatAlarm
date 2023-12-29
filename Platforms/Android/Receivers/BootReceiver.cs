@@ -15,15 +15,6 @@ public class BootReceiver : BroadcastReceiver
         Log.Info("BootReceiver", $"OnReceive {intent}");
 
         var alarmService = new AlarmService();
-        var scheduledTime = alarmService.GetScheduledTime();
-        if (scheduledTime == null)
-        {
-            Log.Info("BootReceiver", $"No alarm scheduled");
-            return;
-        }
-
-        Log.Info("BootReceiver", $"Setting alarm for {scheduledTime}");
-        alarmService.SetAlarm(scheduledTime.Value);
-        Log.Info("BootReceiver", $"Alarm set for {scheduledTime}");
+        alarmService.EnsureAlarmIsSetIfEnabled();
     }
 }

@@ -18,6 +18,10 @@ public partial class MainPage : ContentPage, IDisposable
 
         InitializeComponent();
 
+        alarmService.EnsureAlarmIsSetIfEnabled();
+        OnPropertyChanged(nameof(IsAlarmSet));
+        OnPropertyChanged(nameof(IsAlarmUnset));
+
         var scheduledTime = alarmService.GetScheduledTime();
         AlarmStartTimePicker.Time = scheduledTime ?? new TimeSpan(9, 0, 0);
 

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 using Android.App;
 using Android.Content;
@@ -31,6 +33,35 @@ public partial class AlarmService
         return pendingIntent != null;
     }
 
+    public partial bool IsEnabled()
+    {
+        return Preferences.Default.Get("is_enabled", false)
+            && GetScheduledTime() != null;
+    }
+
+    public partial void EnsureAlarmIsSetIfEnabled()
+    {
+        if (IsEnabled() && !IsSet())
+        {
+            var scheduledTime = GetScheduledTime()
+                ?? throw new UnreachableException("IsEnabled guarantees a scheduled time is set, but GetScheduledTime returned null.");
+
+            Log.Info("AlarmService", $"Alarm is enabled and schedule for {scheduledTime} but no PendingIntent was found");
+            SetAlarm(scheduledTime);
+        }
+        else
+        {
+            if (!IsEnabled())
+            {
+                Log.Info("AlarmService", "Alarm is disabled");
+            }
+            else if (IsSet())
+            {
+                Log.Info("AlarmService", "Alarm is already set");
+            }
+        }
+    }
+
     public partial TimeSpan? GetScheduledTime()
     {
         var storedValue = Preferences.Default.Get<string?>("start_time", null);
@@ -48,7 +79,7 @@ public partial class AlarmService
 
         _alarmManager.Cancel(pendingIntent);
         pendingIntent.Cancel();
-        Preferences.Default.Remove("start_time");
+        Preferences.Default.Remove("is_enabled");
         Log.Info("AlarmService", "Alarm cancelled");
     }
 
@@ -59,20 +90,13 @@ public partial class AlarmService
             throw new InvalidOperationException("Unable to schedule exact alarms");
         }
 
+        var pendingIntent = GetPendingAlarmIntent(create: true)!;
+
         var startTimeInMillis = ConvertToMillis(startTime);
-        var intent = new Intent(Platform.AppContext, typeof(AlarmReceiver));
-        intent.SetFlags(ActivityFlags.ReceiverForeground);
-        intent.PutExtra("triggerTime", startTimeInMillis);
-
-        var pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.Immutable);
-        if (pendingIntent == null)
-        {
-            throw new Exception("Failed to get PendingIntent");
-        }
-
         _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, pendingIntent);
         Preferences.Default.Set("start_time", startTime.ToString("hh\\:mm", CultureInfo.InvariantCulture));
-        Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
+        Preferences.Default.Set("is_enabled", true);
+        Log.Info("AlarmService", $"Alarm set for {ConvertFromMillis(startTimeInMillis)}");
     }
 
     public partial void DismissAlarm()
@@ -81,11 +105,17 @@ public partial class AlarmService
         Platform.AppContext.StopService(intent);
     }
 
-    private static PendingIntent? GetPendingAlarmIntent()
+    private static PendingIntent? GetPendingAlarmIntent(bool create = false)
     {
+        var flags = PendingIntentFlags.OneShot | PendingIntentFlags.Immutable;
+        if (!create)
+            flags |= PendingIntentFlags.NoCreate;
+
         var intent = new Intent(Platform.AppContext, typeof(AlarmReceiver));
-        var pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.NoCreate | PendingIntentFlags.Immutable);
-        return pendingIntent;
+        if (create)
+            intent.SetFlags(ActivityFlags.ReceiverForeground);
+
+        return PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, flags);
     }
 
     private static long ConvertToMillis(TimeSpan time)
@@ -95,14 +125,22 @@ public partial class AlarmService
         calendar.Set(CalendarField.HourOfDay, time.Hours);
         calendar.Set(CalendarField.Minute, time.Minutes);
         calendar.Set(CalendarField.Second, time.Seconds);
+        calendar.Set(CalendarField.Millisecond, 0);
+
+        if (calendar.TimeInMillis < Java.Lang.JavaSystem.CurrentTimeMillis())
+            calendar.Add(CalendarField.DayOfYear, 1);
+
         return calendar.TimeInMillis;
     }
 
-    private static TimeSpan ConvertFromMillis(long millis)
+    private static DateTime ConvertFromMillis(long millis)
     {
         var calendar = Calendar.Instance;
         calendar.TimeInMillis = millis;
-        return new TimeSpan(
+        return new DateTime(
+            calendar.Get(CalendarField.Year),
+            calendar.Get(CalendarField.Month) + 1,
+            calendar.Get(CalendarField.DayOfMonth),
             calendar.Get(CalendarField.HourOfDay),
             calendar.Get(CalendarField.Minute),
             calendar.Get(CalendarField.Second));
