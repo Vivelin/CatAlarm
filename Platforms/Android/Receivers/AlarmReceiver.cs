@@ -1,7 +1,7 @@
 ﻿using Android.Content;
 using Android.Util;
 
-namespace MauiCatAlarm.Platforms.Android;
+namespace MauiCatAlarm.Platforms.Android.Receivers;
 
 [BroadcastReceiver(Exported = true, Enabled = true)]
 public class AlarmReceiver : BroadcastReceiver

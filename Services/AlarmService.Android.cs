@@ -9,6 +9,7 @@ using Android.Util;
 using Java.Util;
 
 using MauiCatAlarm.Platforms.Android;
+using MauiCatAlarm.Platforms.Android.Receivers;
 
 using Calendar = Java.Util.Calendar;
 
@@ -17,7 +18,6 @@ namespace MauiCatAlarm.Services;
 public partial class AlarmService
 {
     private readonly AlarmManager _alarmManager;
-    private PendingIntent? _pendingIntent;
 
     public AlarmService()
     {
@@ -27,7 +27,8 @@ public partial class AlarmService
 
     public partial bool IsSet()
     {
-        return _pendingIntent != null;
+        var pendingIntent = GetPendingAlarmIntent();
+        return pendingIntent != null;
     }
 
     public partial TimeSpan? GetScheduledTime()
@@ -41,15 +42,14 @@ public partial class AlarmService
 
     public partial void DeleteAlarm()
     {
-        if (_pendingIntent == null)
-        {
-            throw new InvalidOperationException("Alarm not set");
-        }
+        var pendingIntent = GetPendingAlarmIntent();
+        if (pendingIntent == null)
+            return;
 
-        _alarmManager.Cancel(_pendingIntent);
+        _alarmManager.Cancel(pendingIntent);
+        pendingIntent.Cancel();
         Preferences.Default.Remove("start_time");
         Log.Info("AlarmService", "Alarm cancelled");
-        _pendingIntent = null;
     }
 
     public partial void SetAlarm(TimeSpan startTime)
@@ -64,13 +64,13 @@ public partial class AlarmService
         intent.SetFlags(ActivityFlags.ReceiverForeground);
         intent.PutExtra("triggerTime", startTimeInMillis);
 
-        _pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.Immutable);
-        if (_pendingIntent == null)
+        var pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.Immutable);
+        if (pendingIntent == null)
         {
             throw new Exception("Failed to get PendingIntent");
         }
 
-        _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
+        _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, pendingIntent);
         Preferences.Default.Set("start_time", startTime.ToString("hh\\:mm", CultureInfo.InvariantCulture));
         Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
     }
@@ -79,6 +79,13 @@ public partial class AlarmService
     {
         var intent = new Intent(Platform.AppContext, typeof(ActiveAlarmService));
         Platform.AppContext.StopService(intent);
+    }
+
+    private static PendingIntent? GetPendingAlarmIntent()
+    {
+        var intent = new Intent(Platform.AppContext, typeof(AlarmReceiver));
+        var pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.NoCreate | PendingIntentFlags.Immutable);
+        return pendingIntent;
     }
 
     private static long ConvertToMillis(TimeSpan time)
@@ -99,18 +106,5 @@ public partial class AlarmService
             calendar.Get(CalendarField.HourOfDay),
             calendar.Get(CalendarField.Minute),
             calendar.Get(CalendarField.Second));
-    }
-
-    private class ServiceConnection : Java.Lang.Object, IServiceConnection
-    {
-        public void OnServiceConnected(ComponentName? name, IBinder? service)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnServiceDisconnected(ComponentName? name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
