@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 using Android.App;
 using Android.Content;
@@ -15,13 +10,14 @@ using Java.Util;
 
 using MauiCatAlarm.Platforms.Android;
 
+using Calendar = Java.Util.Calendar;
+
 namespace MauiCatAlarm.Services;
 
 public partial class AlarmService
 {
     private readonly AlarmManager _alarmManager;
     private PendingIntent? _pendingIntent;
-    private TimeSpan? _scheduledTime;
 
     public AlarmService()
     {
@@ -36,7 +32,11 @@ public partial class AlarmService
 
     public partial TimeSpan? GetScheduledTime()
     {
-        return _scheduledTime;
+        var storedValue = Preferences.Default.Get<string?>("start_time", null);
+        if (TimeSpan.TryParseExact(storedValue, "hh\\:mm", CultureInfo.InvariantCulture, out var timeSpan))
+            return timeSpan;
+
+        return null;
     }
 
     public partial void DeleteAlarm()
@@ -47,9 +47,9 @@ public partial class AlarmService
         }
 
         _alarmManager.Cancel(_pendingIntent);
+        Preferences.Default.Remove("start_time");
         Log.Info("AlarmService", "Alarm cancelled");
         _pendingIntent = null;
-        _scheduledTime = null;
     }
 
     public partial void SetAlarm(TimeSpan startTime)
@@ -71,9 +71,8 @@ public partial class AlarmService
         }
 
         _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
+        Preferences.Default.Set("start_time", startTime.ToString("hh\\:mm", CultureInfo.InvariantCulture));
         Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
-
-        _scheduledTime = startTime;
     }
 
     public partial void DismissAlarm()
@@ -97,8 +96,8 @@ public partial class AlarmService
         var calendar = Calendar.Instance;
         calendar.TimeInMillis = millis;
         return new TimeSpan(
-            calendar.Get(CalendarField.HourOfDay), 
-            calendar.Get(CalendarField.Minute), 
+            calendar.Get(CalendarField.HourOfDay),
+            calendar.Get(CalendarField.Minute),
             calendar.Get(CalendarField.Second));
     }
 

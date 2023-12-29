@@ -1,9 +1,5 @@
-﻿using Android.App;
-using Android.Content;
-using Android.Runtime;
+﻿using Android.Content;
 using Android.Util;
-
-using AndroidX.Core.App;
 
 namespace MauiCatAlarm.Platforms.Android;
 

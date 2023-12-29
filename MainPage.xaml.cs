@@ -21,9 +21,9 @@ public partial class MainPage : ContentPage, IDisposable
         var scheduledTime = alarmService.GetScheduledTime();
         AlarmStartTimePicker.Time = scheduledTime ?? new TimeSpan(9, 0, 0);
 
-#if DEBUG
-        AlarmStartTimePicker.Time = DateTime.Now.NextMinute().TimeOfDay;
-#endif
+//#if DEBUG
+//        AlarmStartTimePicker.Time = DateTime.Now.NextMinute().TimeOfDay;
+//#endif
 
         Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
         {
