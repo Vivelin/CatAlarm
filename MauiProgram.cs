@@ -18,6 +18,7 @@ public static class MauiProgram
 
         builder.Services.AddScoped<MainPage>();
         builder.Services.AddScoped<AlarmPage>();
+        builder.Services.AddTransient<IChallengeFactory, BasicChallengeFactory>();
         builder.Services.AddSingleton<AlarmService>();
 
 #if DEBUG

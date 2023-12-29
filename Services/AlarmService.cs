@@ -14,5 +14,7 @@ public partial class AlarmService
 
     public partial void DeleteAlarm();
 
+    public partial void DismissAlarm();
+
     public partial TimeSpan? GetScheduledTime();
 }

@@ -18,13 +18,13 @@ namespace MauiCatAlarm.Services;
 
 public partial class AlarmService
 {
-    private AlarmManager AlarmManager;
+    private readonly AlarmManager _alarmManager;
     private PendingIntent? _pendingIntent;
     private TimeSpan? _scheduledTime;
 
     public AlarmService()
     {
-        AlarmManager = Android.App.Application.Context.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>()
+        _alarmManager = Platform.AppContext.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>()
             ?? throw new Exception("Failed to get AlarmManager");
     }
 
@@ -45,7 +45,7 @@ public partial class AlarmService
             throw new InvalidOperationException("Alarm not set");
         }
 
-        AlarmManager.Cancel(_pendingIntent);
+        _alarmManager.Cancel(_pendingIntent);
         Log.Info("AlarmService", "Alarm cancelled");
         _pendingIntent = null;
         _scheduledTime = null;
@@ -53,26 +53,32 @@ public partial class AlarmService
 
     public partial void SetAlarm(TimeSpan startTime)
     {
-        if (OperatingSystem.IsAndroidVersionAtLeast(31) && !AlarmManager.CanScheduleExactAlarms())
+        if (OperatingSystem.IsAndroidVersionAtLeast(31) && !_alarmManager.CanScheduleExactAlarms())
         {
             throw new InvalidOperationException("Unable to schedule exact alarms");
         }
 
         var startTimeInMillis = ConvertToMillis(startTime);
-        var intent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
+        var intent = new Intent(Platform.AppContext, typeof(AlarmReceiver));
         intent.SetFlags(ActivityFlags.ReceiverForeground);
         intent.PutExtra("triggerTime", startTimeInMillis);
 
-        _pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, PendingIntentFlags.Immutable);
+        _pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, 0, intent, PendingIntentFlags.Immutable);
         if (_pendingIntent == null)
         {
             throw new Exception("Failed to get PendingIntent");
         }
 
-        AlarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
+        _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, _pendingIntent);
         Log.Info("AlarmService", $"Alarm set for {startTime:t} exactly");
 
         _scheduledTime = startTime;
+    }
+
+    public partial void DismissAlarm()
+    {
+        var intent = new Intent(Platform.AppContext, typeof(AlarmMediaService));
+        Platform.AppContext.StopService(intent);
     }
 
     private static long ConvertToMillis(TimeSpan time)
