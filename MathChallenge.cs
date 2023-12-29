@@ -8,8 +8,8 @@ public class MathChallenge(string prompt, Func<double, bool> validator) : Challe
 
     public static MathChallenge CreateAdditionChallenge()
     {
-        var a = new Random().Next(1, 10);
-        var b = new Random().Next(1, 10);
+        var a = Random.Shared.Next(1, 10);
+        var b = Random.Shared.Next(1, 10);
         return new MathChallenge(
             $"{a} + {b} = ?",
             answer => answer == a + b);
@@ -17,8 +17,8 @@ public class MathChallenge(string prompt, Func<double, bool> validator) : Challe
 
     public static MathChallenge CreateMultiplicationChallenge()
     {
-        var a = new Random().Next(2, 10);
-        var b = new Random().Next(2, 10);
+        var a = Random.Shared.Next(2, 10);
+        var b = Random.Shared.Next(2, 10);
         return new MathChallenge(
             $"{a} × {b} = ?",
             answer => answer == a * b);

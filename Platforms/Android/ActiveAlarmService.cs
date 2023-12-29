@@ -62,7 +62,7 @@ public class ActiveAlarmService : Service
         var pendingIntent = PendingIntent.GetActivity(context, 0, alarmIntent, PendingIntentFlags.Immutable);
 
         var notification = new NotificationCompat.Builder(context, MainApplication.ChannelId)
-            .SetSmallIcon(Resource.Mipmap.appicon)
+            .SetSmallIcon(Resource.Drawable.ic_clock_black_24dp)
             .SetContentTitle("CAT ALARM!")
             .SetContentText("Mew mew mew mew mew mew!")
             .SetPriority(NotificationCompat.PriorityHigh)
@@ -70,7 +70,7 @@ public class ActiveAlarmService : Service
             .SetContentIntent(pendingIntent)
             .SetFullScreenIntent(pendingIntent, true)
             .SetOngoing(true)
-            .SetSilent(true)
+            .SetVisibility((int)NotificationVisibility.Public)
             .Build();
 
         StartForeground(NotificationId, notification);

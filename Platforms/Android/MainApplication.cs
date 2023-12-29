@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Graphics;
+using Android.Media;
 using Android.Runtime;
 using Android.Util;
 
@@ -22,6 +23,8 @@ public class MainApplication : MauiApplication
         base.OnCreate();
 
         var channel = new NotificationChannel(ChannelId, "Alarms", NotificationImportance.High);
+        channel.SetSound(null, null);
+        channel.SetBypassDnd(true);
         var notificationManager = Context.GetSystemService(NotificationService).JavaCast<NotificationManager>();
         notificationManager!.CreateNotificationChannel(channel);
     }
