@@ -28,6 +28,7 @@ public partial class AlarmPage : ContentPage
             return true;
         }
 
+        ChallengeEntry.Text = "";
         return false;
     }
 
