@@ -18,6 +18,10 @@ public static class MauiProgram
 
         builder.Services.AddScoped<MainPage>();
         builder.Services.AddScoped<AlarmPage>();
+        builder.Services.AddScoped<Func<AlarmPage>>(provider =>
+        {
+            return () => provider.GetRequiredService<AlarmPage>();
+        });
         builder.Services.AddTransient<IChallengeFactory, BasicChallengeFactory>();
         builder.Services.AddSingleton<AlarmService>();
 

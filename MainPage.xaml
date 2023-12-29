@@ -12,6 +12,13 @@
                    Text="{Binding FormattedCurrentTime}"
                    Style="{StaticResource Headline}" />
 
+            <Label Text="Wake up!"
+                   IsVisible="{Binding IsAlarmActive}" />
+            <Button x:Name="TurnOffAlarmButton"
+                    Text="Turn off alarm"
+                    IsVisible="{Binding IsAlarmActive}"
+                    Clicked="TurnOffAlarmButton_Clicked" />
+
             <Label x:Name="AlarmPickerLabel"
                    Text="Wake me up at:"
                    IsVisible="{Binding IsAlarmUnset}"/>

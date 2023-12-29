@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Android.App;
 using Android.Content;
+using Android.OS;
 using Android.Runtime;
 using Android.Util;
 
@@ -77,7 +78,7 @@ public partial class AlarmService
 
     public partial void DismissAlarm()
     {
-        var intent = new Intent(Platform.AppContext, typeof(AlarmMediaService));
+        var intent = new Intent(Platform.AppContext, typeof(ActiveAlarmService));
         Platform.AppContext.StopService(intent);
     }
 
@@ -99,5 +100,18 @@ public partial class AlarmService
             calendar.Get(CalendarField.HourOfDay), 
             calendar.Get(CalendarField.Minute), 
             calendar.Get(CalendarField.Second));
+    }
+
+    private class ServiceConnection : Java.Lang.Object, IServiceConnection
+    {
+        public void OnServiceConnected(ComponentName? name, IBinder? service)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnServiceDisconnected(ComponentName? name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

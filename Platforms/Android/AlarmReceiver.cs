@@ -16,7 +16,7 @@ public class AlarmReceiver : BroadcastReceiver
         if (context == null)
             throw new InvalidOperationException("Context is null");
 
-        var mediaIntent = new Intent(context, typeof(AlarmMediaService));
+        var mediaIntent = new Intent(context, typeof(ActiveAlarmService));
         context.StartForegroundService(mediaIntent);
     }
 }

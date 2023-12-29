@@ -1,17 +1,20 @@
-﻿using MauiCatAlarm.Platforms.Android;
-using MauiCatAlarm.Services;
+﻿using System.ComponentModel;
 
-using Microsoft.Extensions.Logging;
+using MauiCatAlarm.Platforms.Android;
+using MauiCatAlarm.Services;
 
 namespace MauiCatAlarm;
 
-public partial class MainPage : ContentPage
+public partial class MainPage : ContentPage, IDisposable
 {
     private readonly AlarmService _alarmService;
+    private readonly Func<AlarmPage> _alarmPageFactory;
 
-    public MainPage(AlarmService alarmService)
+    public MainPage(AlarmService alarmService, Func<AlarmPage> alarmPageFactory)
     {
         _alarmService = alarmService;
+        _alarmPageFactory = alarmPageFactory;
+        App.Current!.PropertyChanged += App_PropertyChanged;
 
         InitializeComponent();
 
@@ -33,7 +36,32 @@ public partial class MainPage : ContentPage
 
     public bool IsAlarmUnset => !IsAlarmSet;
 
+    public bool IsAlarmActive { get; set; }
+
     public string FormattedCurrentTime => DateTime.Now.ToString("T");
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            ((App)App.Current!).PropertyChanged -= App_PropertyChanged;
+        }
+    }
+
+    private void App_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(App.IsAlarmActive))
+        {
+            IsAlarmActive = ((App)App.Current!).IsAlarmActive;
+            OnPropertyChanged(nameof(IsAlarmActive));
+        }
+    }
 
     private async void SetAlarmButton_Clicked(object sender, EventArgs e)
     {
@@ -76,5 +104,11 @@ public partial class MainPage : ContentPage
 
         var startTime = DateTime.Today.Add(scheduledTime.Value);
         return $"You'll be woken up at {startTime:t}.";
+    }
+
+    private void TurnOffAlarmButton_Clicked(object sender, EventArgs e)
+    {
+        var alarmPage = _alarmPageFactory();
+        App.Current!.MainPage = alarmPage;
     }
 }

@@ -6,7 +6,8 @@ namespace MauiCatAlarm;
 
 public partial class App : Application
 {
-    private IServiceScope _serviceScope;
+    private readonly IServiceScope _serviceScope;
+    private bool _isAlarmActive;
 
     public App(IServiceProvider serviceProvider, ILogger<App> logger)
     {
@@ -18,6 +19,19 @@ public partial class App : Application
     }
 
     public IServiceProvider ServiceProvider => _serviceScope.ServiceProvider;
+
+    public bool IsAlarmActive
+    {
+        get => _isAlarmActive;
+        set
+        {
+            if (_isAlarmActive != value)
+            {
+                _isAlarmActive = value;
+                OnPropertyChanged(nameof(IsAlarmActive));
+            }
+        }
+    }
 
     protected override void CleanUp()
     {
