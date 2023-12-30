@@ -18,6 +18,8 @@ public partial class App : Application
         MainPage = ServiceProvider.GetRequiredService<MainPage>();    
     }
 
+    public static new App Current => (App)Application.Current!;
+
     public IServiceProvider ServiceProvider => _serviceScope.ServiceProvider;
 
     public bool IsAlarmActive

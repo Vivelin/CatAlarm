@@ -84,14 +84,12 @@ public class ActiveAlarmService : Service
         _player?.Release();
         _player?.Dispose();
 
-        var app = (App)App.Current!;
-        app.IsAlarmActive = false;
+        App.Current.IsAlarmActive = false;
     }
 
     public void Stop()
     {
-        var app = (App)App.Current!;
-        app.IsAlarmActive = false;
+        App.Current.IsAlarmActive = false;
 
         _player?.Stop();
         StopForeground(StopForegroundFlags.Remove);
@@ -122,8 +120,7 @@ public class ActiveAlarmService : Service
             Log.Info("AlarmMediaService", $"MediaPlayer {mp!.AudioSessionId} prepared Thread=" + Java.Lang.Thread.CurrentThread().Id);
             mp.Start();
 
-            var app = (App)App.Current!;
-            app.IsAlarmActive = true;
+            App.Current.IsAlarmActive = true;
         }
     }
 }

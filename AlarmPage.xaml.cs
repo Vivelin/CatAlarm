@@ -31,7 +31,7 @@ public partial class AlarmPage : ContentPage
             }
             else
             {
-                ((App)App.Current!).MainPage = _mainPageFactory();
+                App.Current.MainPage = _mainPageFactory();
             }
             return true;
         }

@@ -60,7 +60,7 @@ public partial class MainPage : ContentPage, IDisposable
     {
         if (disposing)
         {
-            ((App)App.Current!).PropertyChanged -= App_PropertyChanged;
+            App.Current.PropertyChanged -= App_PropertyChanged;
         }
     }
 
@@ -68,7 +68,7 @@ public partial class MainPage : ContentPage, IDisposable
     {
         if (e.PropertyName == nameof(App.IsAlarmActive))
         {
-            IsAlarmActive = ((App)App.Current!).IsAlarmActive;
+            IsAlarmActive = App.Current.IsAlarmActive;
             OnPropertyChanged(nameof(IsAlarmActive));
         }
     }
@@ -119,6 +119,6 @@ public partial class MainPage : ContentPage, IDisposable
     private void TurnOffAlarmButton_Clicked(object sender, EventArgs e)
     {
         var alarmPage = _alarmPageFactory();
-        App.Current!.MainPage = alarmPage;
+        App.Current.MainPage = alarmPage;
     }
 }
