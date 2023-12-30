@@ -1,22 +1,21 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 
-using Android.Net.IpSec.Ike.Exceptions;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using MauiCatAlarm.Platforms.Android;
+using MauiCatAlarm.Services;
 
-namespace MauiCatAlarm.Services.ViewModels;
+namespace MauiCatAlarm.ViewModels;
 
-public class MainPageViewModel : ObservableObject, IDisposable
+public class MainViewModel : ObservableObject, IDisposable
 {
     private readonly AlarmService _alarmService;
     private readonly Func<AlarmPage> _alarmPageFactory;
     private TimeSpan _alarmTime;
 
-    public MainPageViewModel(AlarmService alarmService, Func<AlarmPage> alarmPageFactory)
+    public MainViewModel(AlarmService alarmService, Func<AlarmPage> alarmPageFactory)
     {
         _alarmService = alarmService;
         _alarmPageFactory = alarmPageFactory;
@@ -86,8 +85,8 @@ public class MainPageViewModel : ObservableObject, IDisposable
                 if (App.Current.MainPage != null)
                 {
                     await App.Current.MainPage.DisplayAlert(
-                        "Permission required", 
-                        "An alarm app without permissions to show you alarms is pretty sad.", 
+                        "Permission required",
+                        "An alarm app without permissions to show you alarms is pretty sad.",
                         "OK");
                 }
                 return;

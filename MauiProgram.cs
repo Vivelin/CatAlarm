@@ -1,5 +1,5 @@
 ﻿using MauiCatAlarm.Services;
-using MauiCatAlarm.Services.ViewModels;
+using MauiCatAlarm.ViewModels;
 
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +17,8 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddTransient<MainPageViewModel>();
+        builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<AlarmViewModel>();
 
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<Func<MainPage>>(provider =>

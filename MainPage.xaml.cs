@@ -2,13 +2,13 @@
 
 using MauiCatAlarm.Platforms.Android;
 using MauiCatAlarm.Services;
-using MauiCatAlarm.Services.ViewModels;
+using MauiCatAlarm.ViewModels;
 
 namespace MauiCatAlarm;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(MainPageViewModel mainPageViewModel)
+    public MainPage(MainViewModel mainPageViewModel)
     {
         BindingContext = mainPageViewModel;
 
