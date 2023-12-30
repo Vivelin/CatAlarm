@@ -17,6 +17,10 @@ public static class MauiProgram
             });
 
         builder.Services.AddScoped<MainPage>();
+        builder.Services.AddScoped<Func<MainPage>>(provider =>
+        {
+            return () => provider.GetRequiredService<MainPage>();
+        });
         builder.Services.AddScoped<AlarmPage>();
         builder.Services.AddScoped<Func<AlarmPage>>(provider =>
         {

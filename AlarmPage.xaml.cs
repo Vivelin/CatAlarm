@@ -6,13 +6,14 @@ public partial class AlarmPage : ContentPage
 {
     private readonly AlarmService _alarmService;
     private readonly IChallengeFactory _challengeFactory;
+    private readonly Func<MainPage> _mainPageFactory;
 
-    public AlarmPage(AlarmService alarmService, IChallengeFactory challengeFactory)
+    public AlarmPage(AlarmService alarmService, IChallengeFactory challengeFactory, Func<MainPage> mainPageFactory)
     {
         InitializeComponent();
         _alarmService = alarmService;
         _challengeFactory = challengeFactory;
-
+        _mainPageFactory = mainPageFactory;
         Challenge = challengeFactory.CreateChallenge();
         OnPropertyChanged(nameof(Challenge));
     }
@@ -24,7 +25,7 @@ public partial class AlarmPage : ContentPage
         if (Challenge.Validate(ChallengeEntry.Text))
         {
             _alarmService.DismissAlarm();
-            Application.Current!.CloseWindow(Window);
+            ((App)App.Current!).MainPage = _mainPageFactory();
             return true;
         }
 
