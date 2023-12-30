@@ -25,7 +25,14 @@ public partial class AlarmPage : ContentPage
         if (Challenge.Validate(ChallengeEntry.Text))
         {
             _alarmService.DismissAlarm();
-            ((App)App.Current!).MainPage = _mainPageFactory();
+            if (App.Current.Windows.Count > 1)
+            {
+                App.Current.CloseWindow(Window);
+            }
+            else
+            {
+                ((App)App.Current!).MainPage = _mainPageFactory();
+            }
             return true;
         }
 
