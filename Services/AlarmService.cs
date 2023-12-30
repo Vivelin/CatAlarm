@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiCatAlarm.Services;
+﻿namespace MauiCatAlarm.Services;
 
 public partial class AlarmService
 {
+    public event EventHandler? ScheduledTimeChanged;
+
+    public event EventHandler? IsEnabledChanged;
+
     public partial void SetAlarm(TimeSpan startTime);
 
     public partial bool IsSet();
@@ -21,4 +19,14 @@ public partial class AlarmService
     public partial void EnsureAlarmIsSetIfEnabled();
 
     public partial TimeSpan? GetScheduledTime();
+
+    protected virtual void OnScheduledTimeChanged(object sender, EventArgs e)
+    {
+        ScheduledTimeChanged?.Invoke(sender, e);
+    }
+
+    protected virtual void OnIsEnabledChanged(object sender, EventArgs e)
+    {
+        IsEnabledChanged?.Invoke(sender, e);
+    }
 }

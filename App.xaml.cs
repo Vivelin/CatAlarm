@@ -9,13 +9,14 @@ public partial class App : Application
     private readonly IServiceScope _serviceScope;
     private bool _isAlarmActive;
 
-    public App(IServiceProvider serviceProvider, ILogger<App> logger)
+    public App(AlarmService alarmService, IServiceProvider serviceProvider, ILogger<App> logger)
     {
         _serviceScope = serviceProvider.CreateScope();
 
         InitializeComponent();
 
-        MainPage = ServiceProvider.GetRequiredService<MainPage>();    
+        MainPage = ServiceProvider.GetRequiredService<MainPage>();
+        alarmService.EnsureAlarmIsSetIfEnabled();
     }
 
     public static new App Current => (App)Application.Current!;

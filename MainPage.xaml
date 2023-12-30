@@ -1,37 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiCatAlarm.Services.ViewModels"
              x:Class="MauiCatAlarm.MainPage"
-             x:Name="Self">
-
+             x:DataType="vm:MainPageViewModel">
     <ScrollView>
         <VerticalStackLayout Padding="30,0"
-                             Spacing="25"
-                             BindingContext="{x:Reference Self}">
-            <Label x:Name="TimeLabel"
-                   Text="{Binding FormattedCurrentTime}"
+                             Spacing="25">
+            <Label Text="{Binding CurrentTime}"
                    Style="{StaticResource Headline}" />
 
+            <!-- Show an ongoing alarm in case the notification was dismissed -->
             <Label Text="Wake up!"
-                   IsVisible="{Binding IsAlarmActive}" />
-            <Button x:Name="TurnOffAlarmButton"
-                    Text="Turn off alarm"
-                    IsVisible="{Binding IsAlarmActive}"
-                    Clicked="TurnOffAlarmButton_Clicked" />
+                   IsVisible="{Binding IsAlarmOngoing}" />
+            <Button Text="Turn off alarm"
+                    IsVisible="{Binding IsAlarmOngoing}"
+                    Command="{Binding NavigateToAlarmCommand}" />
 
-            <Label x:Name="AlarmPickerLabel"
-                   Text="Wake me up at:"
-                   IsVisible="{Binding IsAlarmUnset}"/>
-            <TimePicker x:Name="AlarmStartTimePicker"
+            <!-- Show time picker when alarm is disabled -->
+            <Label Text="Wake me up at:"
+                   IsVisible="{Binding IsAlarmUnset}" />
+            <TimePicker Time="{Binding AlarmTime}"
                         Format="t"
                         IsVisible="{Binding IsAlarmUnset}" />
 
-            <Label x:Name="AlarmLabel"
+            <!-- Show a label with the next occurrence if the alarm is enabled -->
+            <Label Text="{Binding EnabledAlarmLabel}"
                    IsVisible="{Binding IsAlarmSet}" />
 
-            <Button x:Name="SetAlarmButton"
-                    Text="Set alarm"
-                    Clicked="SetAlarmButton_Clicked" />
+            <Button Text="{Binding ToggleAlarmText}"
+                    Command="{Binding ToggleAlarmCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

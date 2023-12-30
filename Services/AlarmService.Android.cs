@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using Android.App;
 using Android.Content;
-using Android.OS;
 using Android.Runtime;
 using Android.Util;
 
@@ -80,6 +78,7 @@ public partial class AlarmService
         _alarmManager.Cancel(pendingIntent);
         pendingIntent.Cancel();
         Preferences.Default.Remove("is_enabled");
+        OnIsEnabledChanged(this, EventArgs.Empty);
         Log.Info("AlarmService", "Alarm cancelled");
     }
 
@@ -96,6 +95,8 @@ public partial class AlarmService
         _alarmManager.SetExactAndAllowWhileIdle(AlarmType.RtcWakeup, startTimeInMillis, pendingIntent);
         Preferences.Default.Set("start_time", startTime.ToString("hh\\:mm", CultureInfo.InvariantCulture));
         Preferences.Default.Set("is_enabled", true);
+        OnIsEnabledChanged(this, EventArgs.Empty);
+        OnScheduledTimeChanged(this, EventArgs.Empty);
         Log.Info("AlarmService", $"Alarm set for {ConvertFromMillis(startTimeInMillis)}");
     }
 
