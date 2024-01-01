@@ -31,12 +31,21 @@ public class MainViewModel : ObservableObject, IDisposable
         App.Current.Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
         {
             OnPropertyChanged(nameof(CurrentTime));
+            OnPropertyChanged(nameof(CurrentWeekday));
+            OnPropertyChanged(nameof(CurrentMonth));
+            OnPropertyChanged(nameof(CurrentDayNumber));
             OnPropertyChanged(nameof(EnabledAlarmLabel));
             return true;
         });
     }
 
     public string CurrentTime => DateTime.Now.ToString("T");
+
+    public string CurrentWeekday => DateTime.Now.ToString("dddd");
+
+    public string CurrentMonth => DateTime.Now.ToString("MMM");
+
+    public string CurrentDayNumber => DateTime.Now.ToString("dd");
 
     public string ToggleAlarmText => IsAlarmSet ? "Disable alarm" : "Set alarm";
 

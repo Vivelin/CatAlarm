@@ -4,6 +4,8 @@ using Android.Media;
 using Android.Runtime;
 using Android.Util;
 
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+
 namespace MauiCatAlarm;
 
 [Application]
@@ -16,7 +18,10 @@ public class MainApplication : MauiApplication
     {
     }
 
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp()
+    {
+        return MauiProgram.CreateMauiApp();
+    }
 
     public override void OnCreate()
     {

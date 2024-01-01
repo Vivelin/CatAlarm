@@ -4,23 +4,29 @@
              xmlns:vm="clr-namespace:MauiCatAlarm.ViewModels"
              x:DataType="vm:AlarmViewModel"
              x:Class="MauiCatAlarm.AlarmPage"
-             Title="AlarmPage">
+             Title="AlarmPage"
+             Style="{StaticResource DangerPage}">
     <VerticalStackLayout>
-        <Label Text="CAT ALARM!" />
+        <Label Text="CAT ALARM!"
+               Style="{StaticResource SubheadingDanger}"/>
 
-        <Label Text="{Binding Challenge.Prompt}" />
+        <Label Text="{Binding Challenge.Prompt}"
+               Style="{StaticResource HeadingDanger}"/>
 
         <Entry Placeholder="Your answer"
                Keyboard="Numeric"
                IsSpellCheckEnabled="False"
                Text="{Binding ChallengeEntryText}"
                ReturnType="Done"
-               ReturnCommand="{Binding DismissAlarmCommand}" />
+               ReturnCommand="{Binding DismissAlarmCommand}"
+               Style="{StaticResource DangerEntry}"/>
 
         <Button Text="Stop alarm"
-                Command="{Binding DismissAlarmCommand}" />
+                Command="{Binding DismissAlarmCommand}"
+                Style="{StaticResource DangerButton}"/>
 
         <Button Text="New question"
-                Command="{Binding NewChallengeCommand}" />
+                Command="{Binding NewChallengeCommand}"
+                Style="{StaticResource SecondaryDangerButton}"/>
     </VerticalStackLayout>
 </ContentPage>

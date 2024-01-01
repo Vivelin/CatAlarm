@@ -5,17 +5,32 @@
              x:Class="MauiCatAlarm.MainPage"
              x:DataType="vm:MainViewModel">
     <ScrollView>
-        <VerticalStackLayout Padding="30,0"
-                             Spacing="25">
-            <Label Text="{Binding CurrentTime}"
-                   Style="{StaticResource Headline}" />
+        <VerticalStackLayout>
+            <VerticalStackLayout Spacing="0">
+                <HorizontalStackLayout HorizontalOptions="Start"
+                                       Spacing="6"
+                                       Padding="0">
+                    <Label Text="{Binding CurrentWeekday}"
+                           Style="{StaticResource Subheading}"
+                           HorizontalOptions="Start" />
+                    <Label Text="{Binding CurrentMonth}"
+                           Style="{StaticResource SubheadingMonth}" />
+                    <Label Text="{Binding CurrentDayNumber}"
+                           Style="{StaticResource SubheadingDayNumber}" />
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding CurrentTime}"
+                       Style="{StaticResource Heading}" />
+            </VerticalStackLayout>
+
 
             <!-- Show an ongoing alarm in case the notification was dismissed -->
             <Label Text="Wake up!"
                    IsVisible="{Binding IsAlarmOngoing}" />
             <Button Text="Turn off alarm"
                     IsVisible="{Binding IsAlarmOngoing}"
-                    Command="{Binding NavigateToAlarmCommand}" />
+                    Command="{Binding NavigateToAlarmCommand}"
+                    Style="{StaticResource DangerButton}" />
 
             <!-- Show time picker when alarm is disabled -->
             <Label Text="Wake me up at:"
@@ -29,7 +44,8 @@
                    IsVisible="{Binding IsAlarmSet}" />
 
             <Button Text="{Binding ToggleAlarmText}"
-                    Command="{Binding ToggleAlarmCommand}" />
+                    Command="{Binding ToggleAlarmCommand}"
+                    Style="{StaticResource PrimaryButton}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
