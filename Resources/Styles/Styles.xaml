@@ -171,9 +171,9 @@
         <Setter Property="FontFamily"
                 Value="Space Grotesk" />
         <Setter Property="FontSize"
-                Value="64" />
+                Value="48" />
         <Setter Property="PlaceholderColor"
-                Value="{StaticResource TextMuted}" />
+                Value="{StaticResource TextDangerMuted}" />
         <Setter Property="MinimumHeightRequest"
                 Value="48" />
         <Setter Property="MinimumWidthRequest"
@@ -185,7 +185,7 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Property="TextColor"
-                                    Value="{StaticResource Neutral300}" />
+                                    Value="{StaticResource TextDangerMuted}" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

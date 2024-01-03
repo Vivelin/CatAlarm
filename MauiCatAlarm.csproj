@@ -36,6 +36,8 @@
 	  <ApplicationId>net.vivelin.catalarm</ApplicationId>
 	  <ApplicationTitle>CAT ALARM</ApplicationTitle>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <ApplicationVersion>3</ApplicationVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
@@ -43,6 +45,8 @@
 	  <ApplicationTitle>CAT ALARM</ApplicationTitle>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <ApplicationVersion>3</ApplicationVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

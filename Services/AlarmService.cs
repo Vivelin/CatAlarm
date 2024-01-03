@@ -6,6 +6,8 @@ public partial class AlarmService
 
     public event EventHandler? IsEnabledChanged;
 
+    public event EventHandler? RingtoneChanged;
+
     public partial void SetAlarm(TimeSpan startTime);
 
     public partial bool IsSet();
@@ -20,6 +22,14 @@ public partial class AlarmService
 
     public partial TimeSpan? GetScheduledTime();
 
+    public partial void SetAlarmRingtone(string name, string filePath);
+
+    public partial void SetDefaultAlarmRingtone();
+    
+    public partial string GetAlarmRingtoneName();
+
+    public partial string? GetAlarmRingtone();
+
     protected virtual void OnScheduledTimeChanged(object sender, EventArgs e)
     {
         ScheduledTimeChanged?.Invoke(sender, e);
@@ -28,5 +38,10 @@ public partial class AlarmService
     protected virtual void OnIsEnabledChanged(object sender, EventArgs e)
     {
         IsEnabledChanged?.Invoke(sender, e);
+    }
+
+    protected virtual void OnRingtoneChanged(object sender, EventArgs e)
+    {
+        RingtoneChanged?.Invoke(sender, e);
     }
 }

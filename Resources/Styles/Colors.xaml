@@ -16,6 +16,7 @@
     <Color x:Key="TextDangerPrimary">#FFF2EA</Color>
     <Color x:Key="TextSecondary">#001C26</Color>
     <Color x:Key="TextMuted">#92A1B0</Color>
+    <Color x:Key="TextDangerMuted">#552800</Color>
 
     <Color x:Key="Neutral300">#92A1B0</Color>
     <Color x:Key="Neutral700">#2E3E4D</Color>

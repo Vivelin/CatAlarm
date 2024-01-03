@@ -106,6 +106,30 @@ public partial class AlarmService
         Platform.AppContext.StopService(intent);
     }
 
+    public partial void SetAlarmRingtone(string name, string filePath)
+    {
+        Preferences.Default.Set("alarm_ringtone", filePath);
+        Preferences.Default.Set("alarm_ringtone_name", name);
+        OnRingtoneChanged(this, EventArgs.Empty);
+    }
+
+    public partial void SetDefaultAlarmRingtone()
+    {
+        Preferences.Default.Remove("alarm_ringtone");
+        Preferences.Default.Remove("alarm_ringtone_name");
+        OnRingtoneChanged(this, EventArgs.Empty);
+    }
+
+    public partial string GetAlarmRingtoneName()
+    {
+        return Preferences.Default.Get("alarm_ringtone_name", "Default");
+    }
+
+    public partial string? GetAlarmRingtone()
+    {
+        return Preferences.Default.Get<string?>("alarm_ringtone", null);
+    }
+
     private static PendingIntent? GetPendingAlarmIntent(bool create = false)
     {
         var flags = PendingIntentFlags.OneShot | PendingIntentFlags.Immutable;
