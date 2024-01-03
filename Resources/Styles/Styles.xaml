@@ -23,6 +23,8 @@
                 Value="48" />
         <Setter Property="MinimumWidthRequest"
                 Value="240" />
+        <Setter Property="Margin"
+                Value="0,6" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -38,6 +40,47 @@
                             <Setter Property="TextColor"
                                     Value="{StaticResource Neutral700}" />
                             <Setter Property="BackgroundColor"
+                                    Value="{StaticResource Neutral300}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver" />
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button"
+           x:Key="SecondaryButton"
+           BaseResourceKey="PrimaryButton">
+        <Setter Property="TextColor"
+                Value="{StaticResource BackgroundButtonPrimary}" />
+        <Setter Property="BorderColor"
+                Value="{StaticResource BackgroundButtonPrimary}" />
+        <Setter Property="BorderWidth"
+                Value="2" />
+        <Setter Property="BackgroundColor"
+                Value="Transparent" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor"
+                                    Value="{StaticResource BackgroundButtonPressed}" />
+                            <Setter Property="BackgroundColor"
+                                    Value="Transparent" />
+                            <Setter Property="BorderColor"
+                                    Value="{StaticResource BackgroundButtonPressed}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor"
+                                    Value="{StaticResource Neutral300}" />
+                            <Setter Property="BackgroundColor"
+                                    Value="Transparent" />
+                            <Setter Property="BorderColor"
                                     Value="{StaticResource Neutral300}" />
                         </VisualState.Setters>
                     </VisualState>
@@ -173,6 +216,8 @@
                 Value="1" />
         <Setter Property="FontFamily"
                 Value="Space Grotesk" />
+        <Setter Property="Margin"
+                Value="0,0,0,64" />
     </Style>
 
     <Style TargetType="Label"

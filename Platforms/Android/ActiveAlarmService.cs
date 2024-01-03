@@ -37,7 +37,7 @@ public class ActiveAlarmService : Service
         var audioManager = context.GetSystemService(AudioService).JavaCast<AudioManager>();
         var session = audioManager!.GenerateAudioSessionId();
 
-        var uri = RingtoneManager.GetDefaultUri(RingtoneType.Alarm);
+        var uri = GetAlarmRingtoneUri();
         var attrib = new AudioAttributes.Builder()
             .SetContentType(AudioContentType.Music)
             !.SetUsage(AudioUsageKind.Alarm)
@@ -94,6 +94,17 @@ public class ActiveAlarmService : Service
         _player?.Stop();
         StopForeground(StopForegroundFlags.Remove);
         StopSelf();
+    }
+
+    private static global::Android.Net.Uri? GetAlarmRingtoneUri()
+    {
+        var configuredRingtonePath = Preferences.Default.Get<string?>("alarm_ringtone", null);
+        if (configuredRingtonePath != null)
+        {
+            return global::Android.Net.Uri.Parse(configuredRingtonePath);
+        }
+
+        return RingtoneManager.GetDefaultUri(RingtoneType.Alarm);
     }
 
     internal class LocalBinder(ActiveAlarmService service) : Binder

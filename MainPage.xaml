@@ -46,6 +46,11 @@
             <Button Text="{Binding ToggleAlarmText}"
                     Command="{Binding ToggleAlarmCommand}"
                     Style="{StaticResource PrimaryButton}" />
+
+            <Button Text="Choose alarm ringtone"
+                    Command="{Binding UpdateAlarmRingtoneCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    IsVisible="{Binding IsAlarmUnset}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

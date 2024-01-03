@@ -27,6 +27,7 @@ public class MainViewModel : ObservableObject, IDisposable
         AlarmTime = _alarmService.GetScheduledTime() ?? new TimeSpan(9, 0, 0);
         ToggleAlarmCommand = new AsyncRelayCommand(ToggleAlarmAsync);
         NavigateToAlarmCommand = new RelayCommand(NavigateToAlarm);
+        UpdateAlarmRingtoneCommand = new AsyncRelayCommand(UpdateAlarmRingtoneAsync);
 
         App.Current.Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
         {
@@ -60,6 +61,8 @@ public class MainViewModel : ObservableObject, IDisposable
     public ICommand ToggleAlarmCommand { get; }
 
     public ICommand NavigateToAlarmCommand { get; }
+
+    public ICommand UpdateAlarmRingtoneCommand { get; }
 
     public TimeSpan AlarmTime
     {
@@ -169,5 +172,24 @@ public class MainViewModel : ObservableObject, IDisposable
             nextOccurence = nextOccurence.AddDays(1);
 
         return nextOccurence;
+    }
+
+    private async Task UpdateAlarmRingtoneAsync()
+    {
+        var fileTypes = new Dictionary<DevicePlatform, IEnumerable<string>>()
+        {
+            [DevicePlatform.Android] = ["audio/*"]
+        };
+
+        var result = await FilePicker.Default.PickAsync(new PickOptions
+        {
+            PickerTitle = "Select alarm ringtone",
+            FileTypes = new(fileTypes)
+        });
+
+        if (result != null)
+        {
+            Preferences.Default.Set("alarm_ringtone", result.FullPath);
+        }
     }
 }
