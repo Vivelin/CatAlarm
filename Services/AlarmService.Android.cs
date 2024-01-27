@@ -3,6 +3,7 @@ using System.Globalization;
 
 using Android.App;
 using Android.Content;
+using Android.Media;
 using Android.Runtime;
 using Android.Util;
 
@@ -104,6 +105,20 @@ public partial class AlarmService
     {
         var intent = new Intent(Platform.AppContext, typeof(ActiveAlarmService));
         Platform.AppContext.StopService(intent);
+    }
+
+    public partial void PickAlarmRingtone()
+    {
+        if (Platform.CurrentActivity is null) throw new InvalidOperationException("Can't pick a ringtone without a current activity.");
+
+        var intent = new Intent(RingtoneManager.ActionRingtonePicker);
+        intent.PutExtra(RingtoneManager.ExtraRingtoneTitle, "Select alarm ringtone");
+        intent.PutExtra(RingtoneManager.ExtraRingtoneType, (int)RingtoneType.Alarm);
+        intent.PutExtra(RingtoneManager.ExtraRingtoneShowSilent, false);
+        intent.PutExtra(RingtoneManager.ExtraRingtoneShowDefault, true);
+        intent.PutExtra(RingtoneManager.ExtraRingtoneExistingUri, GetAlarmRingtone());
+        // intent.SetFlags(ActivityFlags.NewTask);
+        Platform.CurrentActivity.StartActivityForResult(intent, RingtonePickerRequestCode);
     }
 
     public partial void SetAlarmRingtone(string name, string filePath)

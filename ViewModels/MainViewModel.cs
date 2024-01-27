@@ -182,31 +182,34 @@ public class MainViewModel : ObservableObject, IDisposable
         return nextOccurence;
     }
 
-    private async Task UpdateAlarmRingtoneAsync()
+    private Task UpdateAlarmRingtoneAsync()
     {
-        var fileTypes = new Dictionary<DevicePlatform, IEnumerable<string>>()
-        {
-            [DevicePlatform.Android] = ["audio/*"]
-        };
+        _alarmService.PickAlarmRingtone();
+        return Task.CompletedTask;
 
-        var result = await FilePicker.Default.PickAsync(new PickOptions
-        {
-            PickerTitle = "Select alarm ringtone",
-            FileTypes = new(fileTypes)
-        });
+        //var fileTypes = new Dictionary<DevicePlatform, IEnumerable<string>>()
+        //{
+        //    [DevicePlatform.Android] = ["audio/*"]
+        //};
 
-        if (result != null)
-        {
-            // It seems MAUI copies the selected file to the cache dir, but
-            // Android might clear that, so we should copy it to the app data
-            // dir.
-            using var selectedFile = await result.OpenReadAsync();
-            var targetPath = Path.Combine(FileSystem.Current.AppDataDirectory, result.FileName);
+        //var result = await FilePicker.Default.PickAsync(new PickOptions
+        //{
+        //    PickerTitle = "Select alarm ringtone",
+        //    FileTypes = new(fileTypes)
+        //});
 
-            using var targetFile = File.Create(targetPath);
-            await selectedFile.CopyToAsync(targetFile);
+        //if (result != null)
+        //{
+        //    // It seems MAUI copies the selected file to the cache dir, but
+        //    // Android might clear that, so we should copy it to the app data
+        //    // dir.
+        //    using var selectedFile = await result.OpenReadAsync();
+        //    var targetPath = Path.Combine(FileSystem.Current.AppDataDirectory, result.FileName);
 
-            _alarmService.SetAlarmRingtone(result.FileName, targetPath);
-        }
+        //    using var targetFile = File.Create(targetPath);
+        //    await selectedFile.CopyToAsync(targetFile);
+
+        //    _alarmService.SetAlarmRingtone(result.FileName, targetPath);
+        //}
     }
 }

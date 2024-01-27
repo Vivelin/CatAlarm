@@ -2,6 +2,8 @@
 
 public partial class AlarmService
 {
+    public const int RingtonePickerRequestCode = 8008;
+
     public event EventHandler? ScheduledTimeChanged;
 
     public event EventHandler? IsEnabledChanged;
@@ -23,6 +25,8 @@ public partial class AlarmService
     public partial TimeSpan? GetScheduledTime();
 
     public partial void SetAlarmRingtone(string name, string filePath);
+
+    public partial void PickAlarmRingtone();
 
     public partial void SetDefaultAlarmRingtone();
     
