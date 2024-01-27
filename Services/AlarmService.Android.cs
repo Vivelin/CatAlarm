@@ -116,7 +116,19 @@ public partial class AlarmService
         intent.PutExtra(RingtoneManager.ExtraRingtoneType, (int)RingtoneType.Alarm);
         intent.PutExtra(RingtoneManager.ExtraRingtoneShowSilent, false);
         intent.PutExtra(RingtoneManager.ExtraRingtoneShowDefault, true);
-        intent.PutExtra(RingtoneManager.ExtraRingtoneExistingUri, Android.Net.Uri.Parse(GetAlarmRingtone()));
+
+        try
+        {
+            var currentRingtoneUri = GetAlarmRingtone();
+            if (!string.IsNullOrEmpty(currentRingtoneUri))
+            {
+                intent.PutExtra(RingtoneManager.ExtraRingtoneExistingUri, Android.Net.Uri.Parse(currentRingtoneUri));
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warn("AlarmService", Java.Lang.Throwable.FromException(ex));
+        }
         Platform.CurrentActivity.StartActivityForResult(intent, RingtonePickerRequestCode);
     }
 
